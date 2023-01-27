@@ -68,30 +68,34 @@ def tinyMazeSearch(problem):
     return  [s,s,w,s,w,w,s,w]
 
 def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
-    Your search algorithm needs to return a list of actions that reaches
-    the goal. Make sure that you implement the graph search version of DFS,
-    which avoids expanding any already visited states. 
-    Otherwise your implementation may run infinitely!
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
-    """
-    YOUR CODE HERE
-    """
+    # Create a stack for DFS
+    stack = []
+    # Create a set to track visited nodes
+    visited = set()
+    # Push the start state onto the stack
+    stack.append((problem.getStartState(), []))
+    # While the stack is not empty
+    while stack:
+        # Pop a node from the stack
+        node, actions = stack.pop()
+        # If the node is not visited
+        if node not in visited:
+            # Mark it as visited
+            visited.add(node)
+            # If the node is the goal state
+            if problem.isGoalState(node):
+                return actions
+            # Get the node's successors
+            for neighbor, action, cost in problem.getSuccessors(node):
+                # Push the neighbor onto the stack with the action added to the list of actions
+                stack.append((neighbor, actions + [action]))
+    # If the search fails to find the goal, return None
+    return None
 
-    util.raiseNotDefined()
     
 
 def breadthFirstSearch(problem):
-    """
-    YOUR CODE HERE
-    """
-    util.raiseNotDefined()
+    return []
 
 def uniformCostSearch(problem):
     """
