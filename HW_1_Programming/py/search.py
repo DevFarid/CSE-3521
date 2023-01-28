@@ -14,7 +14,7 @@ by Pacman agents (in searchAgents.py).
 import util
 from util import heappush, heappop
 from collections import deque
-from queue import PriorityQueue
+import heapq
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -78,14 +78,14 @@ def depthFirstSearch(problem):
     fringe = []
     
     # Use set to keep track of visited nodes. All nodes should be unique, no self-node .
-    visited = set()
+    visitedNodes = set()
     fringe.append((problem.getStartState(), []))
     
     # While the fringe is not empty
     while fringe:
         node, actions = fringe.pop()
-        if node not in visited:
-            visited.add(node)
+        if node not in visitedNodes:
+            visitedNodes.add(node)
             
             if problem.isGoalState(node):
                 return actions
@@ -104,14 +104,14 @@ def breadthFirstSearch(problem):
     fringe = deque()
     
     # Use set to keep track of visited nodes. All nodes should be unique, no self-node .
-    visited = set()
+    visitedNodes = set()
     fringe.append((problem.getStartState(), []))
     
     # While the queue is not empty
     while fringe:
         node, actions = fringe.popleft()
-        if node not in visited:
-            visited.add(node)
+        if node not in visitedNodes:
+            visitedNodes.add(node)
             if problem.isGoalState(node):
                 return actions
             
@@ -125,24 +125,26 @@ def breadthFirstSearch(problem):
 #
 #
 def uniformCostSearch(problem):
-    # Implementation: Fringe is a priority queue.
-    fringe = PriorityQueue()
-    
-    visited = set()
-    fringe.append((problem.getStartState(), []))
-    
+    # Create a priority queue for UCS
+    queue = []
+    # Create a set to track visited nodes
+    visitedNodes = set()
+    # Add the start state to the queue with a cost of 0
+    heapq.heappush(queue, (0, problem.getStartState(), []))
     # While the queue is not empty
-    while fringe:
-        node, actions = fringe.popleft()
-        if node not in visited:
-            visited.add(node)
+    while queue:
+        # Dequeue a node from the queue
+        cost, node, actions = heapq.heappop(queue)
+        
+        if node not in visitedNodes:
+            visitedNodes.add(node)
+            
             if problem.isGoalState(node):
                 return actions
             
-            for neighbor, action, cost in problem.getSuccessors(node):
-                problem.getCostOfActions
-                fringe.append((neighbor, actions + [action]))
-    # Otherwise, if fringe is empty or any other unexpected error, return None.
+            for neighbor, action, step_cost in problem.getSuccessors(node):
+                heapq.heappush(queue, (cost + step_cost, neighbor, actions + [action]))
+    # If the search fails to find the goal, return None
     return None
 
 def nullHeuristic(state, problem=None):
