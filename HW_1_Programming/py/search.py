@@ -13,6 +13,8 @@ by Pacman agents (in searchAgents.py).
 
 import util
 from util import heappush, heappop
+from collections import deque
+from queue import PriorityQueue
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -67,41 +69,81 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s,s,w,s,w,w,s,w]
 
+#
+#   Depth First Search
+#   Strategy: Expand a deepest node first.
+#
 def depthFirstSearch(problem):
-    # Create a stack for DFS
-    stack = []
-    # Create a set to track visited nodes
+    # Implementation: Fringe is a Last-In-First-Out stack.
+    fringe = []
+    
+    # Use set to keep track of visited nodes. All nodes should be unique, no self-node .
     visited = set()
-    # Push the start state onto the stack
-    stack.append((problem.getStartState(), []))
-    # While the stack is not empty
-    while stack:
-        # Pop a node from the stack
-        node, actions = stack.pop()
-        # If the node is not visited
+    fringe.append((problem.getStartState(), []))
+    
+    # While the fringe is not empty
+    while fringe:
+        node, actions = fringe.pop()
         if node not in visited:
-            # Mark it as visited
             visited.add(node)
-            # If the node is the goal state
+            
             if problem.isGoalState(node):
                 return actions
-            # Get the node's successors
+            
             for neighbor, action, cost in problem.getSuccessors(node):
-                # Push the neighbor onto the stack with the action added to the list of actions
-                stack.append((neighbor, actions + [action]))
-    # If the search fails to find the goal, return None
+                fringe.append((neighbor, actions + [action]))
+    # Otherwise, if fringe is empty or any other unexpected error, return None.
     return None
 
-    
-
+#
+#   Breath First Search
+#   Strategy: Expand a shallowest node first.
+#
 def breadthFirstSearch(problem):
-    return []
+    # Implementation: Fringe is a Last-In-First-Out stack.
+    fringe = deque()
+    
+    # Use set to keep track of visited nodes. All nodes should be unique, no self-node .
+    visited = set()
+    fringe.append((problem.getStartState(), []))
+    
+    # While the queue is not empty
+    while fringe:
+        node, actions = fringe.popleft()
+        if node not in visited:
+            visited.add(node)
+            if problem.isGoalState(node):
+                return actions
+            
+            for neighbor, action, cost in problem.getSuccessors(node):
+                fringe.append((neighbor, actions + [action]))
+    # Otherwise, if fringe is empty or any other unexpected error, return None.
+    return None
 
+#
+# Expand the cheapest node first
+#
+#
 def uniformCostSearch(problem):
-    """
-    YOUR CODE HERE
-    """
-    util.raiseNotDefined()
+    # Implementation: Fringe is a priority queue.
+    fringe = PriorityQueue()
+    
+    visited = set()
+    fringe.append((problem.getStartState(), []))
+    
+    # While the queue is not empty
+    while fringe:
+        node, actions = fringe.popleft()
+        if node not in visited:
+            visited.add(node)
+            if problem.isGoalState(node):
+                return actions
+            
+            for neighbor, action, cost in problem.getSuccessors(node):
+                problem.getCostOfActions
+                fringe.append((neighbor, actions + [action]))
+    # Otherwise, if fringe is empty or any other unexpected error, return None.
+    return None
 
 def nullHeuristic(state, problem=None):
     """
