@@ -132,21 +132,21 @@ def uniformCostSearch(problem):
     
     # While the fringe is not empty
     while fringe:
-        cost, currentState, path = heappop(fringe)
+        cost, node, path = heappop(fringe)
 
         # Ignore if already visited.
-        if currentState in visited:
+        if node in visited:
             continue
         
         # If here, then probably have not visited this node.
-        visited.add(currentState)
+        visited.add(node)
 
         # If this is the goal state, return the path.
-        if problem.isGoalState(currentState):
+        if problem.isGoalState(node):
             return path
         
         # Otherwise, keep traversing the short path costs until goal is found.
-        for nextState, action, step_cost in problem.getSuccessors(currentState):
+        for nextState, action, step_cost in problem.getSuccessors(node):
             if nextState not in visited:
                 heappush(fringe, (cost + step_cost, nextState, path + [action]))
     # Otherwise, if fringe is empty or if error, return None.
