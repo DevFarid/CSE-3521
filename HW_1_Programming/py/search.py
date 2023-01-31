@@ -123,8 +123,34 @@ def breadthFirstSearch(problem):
 #   Strategy: Expand the cheapest node first
 #   Implementation: Fringe is a priority queue (priority based on cumulative cost)
 #
+
 def uniformCostSearch(problem):
-    return []
+    fringe = []
+    # Use set to keep track of visited nodes. All nodes should be unique, no self-node.
+    visited = set()
+    heappush(fringe, (0, problem.getStartState(), []))
+    
+    # While the fringe is not empty
+    while fringe:
+        cost, currentState, path = heappop(fringe)
+
+        # Ignore if already visited.
+        if currentState in visited:
+            continue
+        
+        # If here, then probably have not visited this node.
+        visited.add(currentState)
+
+        # If this is the goal state, return the path.
+        if problem.isGoalState(currentState):
+            return path
+        
+        # Otherwise, keep traversing the short path costs until goal is found.
+        for nextState, action, step_cost in problem.getSuccessors(currentState):
+            if nextState not in visited:
+                heappush(fringe, (cost + step_cost, nextState, path + [action]))
+    # Otherwise, if fringe is empty or if error, return None.
+    return None
 
 def nullHeuristic(state, problem=None):
     """
