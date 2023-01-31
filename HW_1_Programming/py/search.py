@@ -12,9 +12,7 @@ by Pacman agents (in searchAgents.py).
 """
 
 import util
-from util import heappush, heappop
-from collections import deque
-import heapq
+from util import heappush, heappop, Stack, Queue
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -72,14 +70,14 @@ def tinyMazeSearch(problem):
 #
 #   Depth First Search
 #   Strategy: Expand a deepest node first.
+#   Implementation: Fringe is a Last-In-First-Out stack.
 #
 def depthFirstSearch(problem):
-    # Implementation: Fringe is a Last-In-First-Out stack.
-    fringe = []
+    fringe = Stack()
     
-    # Use set to keep track of visited nodes. All nodes should be unique, no self-node .
+    # Use set to keep track of visited nodes. All nodes should be unique, no self-node.
     visitedNodes = set()
-    fringe.append((problem.getStartState(), []))
+    fringe.push((problem.getStartState(), []))
     
     # While the fringe is not empty
     while fringe:
@@ -91,61 +89,42 @@ def depthFirstSearch(problem):
                 return actions
             
             for neighbor, action, cost in problem.getSuccessors(node):
-                fringe.append((neighbor, actions + [action]))
-    # Otherwise, if fringe is empty or any other unexpected error, return None.
+                fringe.push((neighbor, actions + [action]))
+    # Otherwise, if fringe is empty or if error, return None.
     return None
 
 #
 #   Breath First Search
 #   Strategy: Expand a shallowest node first.
+#   Implementation: Fringe is a Last-In-First-Out stack.
 #
 def breadthFirstSearch(problem):
-    # Implementation: Fringe is a Last-In-First-Out stack.
-    fringe = deque()
+    fringe = Queue()
     
-    # Use set to keep track of visited nodes. All nodes should be unique, no self-node .
+    # Use set to keep track of visited nodes. All nodes should be unique, no self-node.
     visitedNodes = set()
-    fringe.append((problem.getStartState(), []))
+    fringe.push((problem.getStartState(), []))
     
-    # While the queue is not empty
+    # While the fringe is not empty
     while fringe:
-        node, actions = fringe.popleft()
+        node, actions = fringe.pop()
         if node not in visitedNodes:
             visitedNodes.add(node)
             if problem.isGoalState(node):
                 return actions
             
             for neighbor, action, cost in problem.getSuccessors(node):
-                fringe.append((neighbor, actions + [action]))
-    # Otherwise, if fringe is empty or any other unexpected error, return None.
+                fringe.push((neighbor, actions + [action]))
+    # Otherwise, if fringe is empty or if error, return None.
     return None
 
 #
-# Expand the cheapest node first
-#
+#   Uniform Cost Search
+#   Strategy: Expand the cheapest node first
+#   Implementation: Fringe is a priority queue (priority based on cumulative cost)
 #
 def uniformCostSearch(problem):
-    # Create a priority queue for UCS
-    queue = []
-    # Create a set to track visited nodes
-    visitedNodes = set()
-    # Add the start state to the queue with a cost of 0
-    heapq.heappush(queue, (0, problem.getStartState(), []))
-    # While the queue is not empty
-    while queue:
-        # Dequeue a node from the queue
-        cost, node, actions = heapq.heappop(queue)
-        
-        if node not in visitedNodes:
-            visitedNodes.add(node)
-            
-            if problem.isGoalState(node):
-                return actions
-            
-            for neighbor, action, step_cost in problem.getSuccessors(node):
-                heapq.heappush(queue, (cost + step_cost, neighbor, actions + [action]))
-    # If the search fails to find the goal, return None
-    return None
+    return []
 
 def nullHeuristic(state, problem=None):
     """
