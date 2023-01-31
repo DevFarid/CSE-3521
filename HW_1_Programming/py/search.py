@@ -13,6 +13,7 @@ by Pacman agents (in searchAgents.py).
 
 import util
 from util import heappush, heappop, Stack, Queue
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -123,7 +124,6 @@ def breadthFirstSearch(problem):
 #   Strategy: Expand the cheapest node first
 #   Implementation: Fringe is a priority queue (priority based on cumulative cost)
 #
-
 def uniformCostSearch(problem):
     fringe = []
     # Use set to keep track of visited nodes. All nodes should be unique, no self-node.
