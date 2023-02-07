@@ -76,21 +76,24 @@ def tinyMazeSearch(problem):
 def depthFirstSearch(problem):
     fringe = Stack()
     
-    # Use set to keep track of visited nodes. All nodes should be unique, no self-node.
+    # Use set to keep track of visited nodes. All nodes should be unique & visited once, no self-node.
     visitedNodes = set()
-    fringe.push((problem.getStartState(), [])) # FORMATTED AS ((x,y), [])
+    fringe.push( ( problem.getStartState(), [] ) ) # FORMATTED AS ((Node.x, Node.y), [LIST OF PREVIOUS ACTION THAT TOOK US TO THIS NODE.])
     
     # While the fringe is not empty
     while fringe:
         node, actions = fringe.pop() # node is (x,y), action is EMPTY on first iteration.
+        # If we haven't visited this current node then:
         if node not in visitedNodes:
             visitedNodes.add(node)
             
+            # If we happen to arrive at the goal, stop execution and return our current path traversed.
             if problem.isGoalState(node):
                 return actions
             
+            # Otherwise, let's keep searching through our successor function.
             for neighbor, action, cost in problem.getSuccessors(node):
-                fringe.push((neighbor, actions + [action]))
+                fringe.push((neighbor, actions + [action])) #
     # Otherwise, if fringe is empty, return None.
     return None
 
@@ -98,24 +101,29 @@ def depthFirstSearch(problem):
 #   Breath First Search
 #   Strategy: Expand a shallowest node first.
 #   Implementation: Fringe is a Last-In-First-Out stack.
+#   Pretty much same as DFS, except our data structure is what makes it different due to the pop() algorithm.
 #
 def breadthFirstSearch(problem):
-    fringe = Queue()
+    fringe = Queue() # Our fringe will be a list of tuples. Where the tuple is ((Node Coordinate), [DIRECTON/ACTION])
     
     # Use set to keep track of visited nodes. All nodes should be unique, no self-node.
     visitedNodes = set()
-    fringe.push((problem.getStartState(), []))
+    fringe.push( ( problem.getStartState(), [] ) ) # FORMATTED AS ((Node.x, Node.y), [LIST OF PREVIOUS ACTION THAT TOOK US TO THIS NODE.])
     
     # While the fringe is not empty
     while fringe:
         node, actions = fringe.pop()
+        # If we haven't visited this current node then:
         if node not in visitedNodes:
             visitedNodes.add(node)
+            
+            # If we happen to arrive at the goal, stop execution and return our current path traversed.
             if problem.isGoalState(node):
                 return actions
             
+            # Otherwise, let's keep searching through our successor function.
             for neighbor, action, cost in problem.getSuccessors(node):
-                fringe.push((neighbor, actions + [action]))
+                fringe.push( (neighbor, actions + [action]) )
     # Otherwise, if fringe is empty, return None.
     return None
 
@@ -128,7 +136,7 @@ def uniformCostSearch(problem):
     fringe = []
     # Use set to keep track of visited nodes. All nodes should be unique, no self-node.
     visited = set()
-    heappush(fringe, (0, problem.getStartState(), [])) # ( priority, ((tuple), DIRECTION, COST) )
+    heappush(fringe, ( 0, problem.getStartState(), [] ) ) # FORMATTED AS A TUPLE S.T. ( PRIORITY=COST, (Node.x, Node.y), [PREVIOUS ACTIONS])
     
     # While the fringe is not empty
     while fringe:
@@ -148,7 +156,9 @@ def uniformCostSearch(problem):
         # Otherwise, keep traversing the short path costs until goal is found.
         for nextState, action, newCost in problem.getSuccessors(node):
             if nextState not in visited:
+                # Add the previous costs, and this new cost because we want to find the best path.
                 heappush(fringe, (cost + newCost, nextState, path + [action]))
+                
     # Otherwise, if fringe is empty, return None.
     return None
 
@@ -158,18 +168,22 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
-
+#
+#   Uniform Cost Search
+#   Strategy: UCS + Greedy
+#   Implementation: Fringe is a priority queue (priority based on heuristic + cumulative cost). 
+#
 def aStarSearch(problem, heuristic=nullHeuristic):
 #    h_start = heuristic(problem.getStartState(), problem)
     fringe = []
     visited = set()
-    heappush(fringe, (0, problem.getStartState(), []))
+    heappush( fringe, ( 0, problem.getStartState(), [] ) )
     
     # While the fringe is not empty
     while fringe:
         hOfX, node, path = heappop(fringe)
 
-        print("\n----\n", "h(x)=", hOfX, "\n", "NODE:",node, "\n", "PATH TRAVERSED",path, "\n","\nSUCCESSORS(",node,")=", problem.getSuccessors(node),"\n" ,"TOTAL COST:",problem.getCostOfActions(path), "\n----\n")
+        # print("\n----\n", "h(x)=", hOfX, "\n", "NODE:",node, "\n", "PATH TRAVERSED",path, "\n","\nSUCCESSORS(",node,")=", problem.getSuccessors(node),"\n" ,"problem.getCostOfActions(",path,")",problem.getCostOfActions(path), "\n----\n")
 
         # Ignore if already visited.
         if node in visited:
@@ -185,11 +199,10 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         # Otherwise, keep traversing the short path costs until goal is found.
         for nextState, action, newCost in problem.getSuccessors(node):
             if nextState not in visited:
-                heappush(fringe, (heuristic(nextState, problem), nextState, path + [action]))
+                heappush(fringe, ( problem.getCostOfActions(path + [action]) + heuristic(nextState, problem), nextState, path + [action]))
+                # Computationally expensive, but we sort the heuristic + cost of actions, so that we pick the best possible node.
+                fringe.sort(key=lambda x: x[0])
     # Otherwise, if fringe is empty, return None.
-    return None
-    
-    
     return None
 
 
