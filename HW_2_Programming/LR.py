@@ -115,7 +115,10 @@ def auto_grade(w, b):
     else:
         print("Incorrect b")
 
-
+# The function `def linear_regression(X, Y)`: please go to the function and read the input format, 
+# output format, and the instructions carefully. You can assume that the actual inputs will follow the input format, 
+# and your goal is to generate the required numpy arrays (`w` and `b`), the weights and bias of linear regression. 
+# Please make sure that your results follow the required numpy array shapes. You are to implement your code between 
 def linear_regression(X, Y):
     """
     Input:
@@ -136,8 +139,16 @@ def linear_regression(X, Y):
     tilde_X = np.concatenate((X, np.ones((1, N))), 0) # add 1 to the end of each data instance
 
     ### Your job starts here ###
+    
+    fragment = np.linalg.inv(np.matmul(tilde_X, np.transpose(tilde_X)))   # fragment = (tilde_X * tilde_X^T)^-1            
+    fragmentTwo = np.matmul(tilde_X, Y)                                 # fragmentThree = tilde_X * Y
+    fragmentThree = np.matmul(fragment, fragmentTwo)
 
+    print("tilde_W is", fragmentThree)
 
+    
+    w = fragmentThree[:len(fragmentThree)-1].copy()
+    b = fragmentThree[len(fragmentThree)-1]
 
     ### Your job ends here ###
     return w, b
@@ -187,7 +198,7 @@ def main(args):
     print("w: ", w)
     print("b: ", b)
 
-    # Evaluation
+    # Evaluation 
     training_error = np.mean((np.matmul(w.transpose(), X) + b - Y.transpose()) ** 2)
     test_error = np.mean((np.matmul(w.transpose(), X_test) + b - Y_test.transpose()) ** 2)
     print("Training mean square error: ", training_error)
