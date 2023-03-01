@@ -275,7 +275,8 @@ def main(args):
         3. Useful tool: check the "np.matmul" function and the builtin "transpose()" function of a numpy array 
         4. Hint: Just one line of code
         """
-        new_X = ...
+        
+        new_X = np.matmul(np.transpose(W), X - mu)
 
         ### Your job 2 ends here ###
 
