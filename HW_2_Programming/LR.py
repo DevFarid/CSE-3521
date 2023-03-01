@@ -144,8 +144,6 @@ def linear_regression(X, Y):
     fragmentTwo = np.matmul(tilde_X, Y)                                 # fragmentThree = tilde_X * Y
     fragmentThree = np.matmul(fragment, fragmentTwo)
 
-    print("tilde_W is", fragmentThree)
-
     
     w = fragmentThree[:len(fragmentThree)-1].copy()
     b = fragmentThree[len(fragmentThree)-1]
